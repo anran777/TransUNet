@@ -2,6 +2,7 @@ import math
 
 from os.path import join as pjoin
 from collections import OrderedDict
+from pathlib import Path
 
 import torch
 import torch.nn as nn
@@ -74,18 +75,18 @@ class PreActBottleneck(nn.Module):
         return y
 
     def load_from(self, weights, n_block, n_unit):
-        conv1_weight = np2th(weights[pjoin(n_block, n_unit, "conv1/kernel")], conv=True)
-        conv2_weight = np2th(weights[pjoin(n_block, n_unit, "conv2/kernel")], conv=True)
-        conv3_weight = np2th(weights[pjoin(n_block, n_unit, "conv3/kernel")], conv=True)
+        conv1_weight = np2th(weights[Path(pjoin(n_block, n_unit, "conv1/kernel")).as_posix()], conv=True)
+        conv2_weight = np2th(weights[Path(pjoin(n_block, n_unit, "conv2/kernel")).as_posix()], conv=True)
+        conv3_weight = np2th(weights[Path(pjoin(n_block, n_unit, "conv3/kernel")).as_posix()], conv=True)
 
-        gn1_weight = np2th(weights[pjoin(n_block, n_unit, "gn1/scale")])
-        gn1_bias = np2th(weights[pjoin(n_block, n_unit, "gn1/bias")])
+        gn1_weight = np2th(weights[Path(pjoin(n_block, n_unit, "gn1/scale")).as_posix()])
+        gn1_bias = np2th(weights[Path(pjoin(n_block, n_unit, "gn1/bias")).as_posix()])
 
-        gn2_weight = np2th(weights[pjoin(n_block, n_unit, "gn2/scale")])
-        gn2_bias = np2th(weights[pjoin(n_block, n_unit, "gn2/bias")])
+        gn2_weight = np2th(weights[Path(pjoin(n_block, n_unit, "gn2/scale")).as_posix()])
+        gn2_bias = np2th(weights[Path(pjoin(n_block, n_unit, "gn2/bias")).as_posix()])
 
-        gn3_weight = np2th(weights[pjoin(n_block, n_unit, "gn3/scale")])
-        gn3_bias = np2th(weights[pjoin(n_block, n_unit, "gn3/bias")])
+        gn3_weight = np2th(weights[Path(pjoin(n_block, n_unit, "gn3/scale")).as_posix()])
+        gn3_bias = np2th(weights[Path(pjoin(n_block, n_unit, "gn3/bias")).as_posix()])
 
         self.conv1.weight.copy_(conv1_weight)
         self.conv2.weight.copy_(conv2_weight)
@@ -101,9 +102,9 @@ class PreActBottleneck(nn.Module):
         self.gn3.bias.copy_(gn3_bias.view(-1))
 
         if hasattr(self, 'downsample'):
-            proj_conv_weight = np2th(weights[pjoin(n_block, n_unit, "conv_proj/kernel")], conv=True)
-            proj_gn_weight = np2th(weights[pjoin(n_block, n_unit, "gn_proj/scale")])
-            proj_gn_bias = np2th(weights[pjoin(n_block, n_unit, "gn_proj/bias")])
+            proj_conv_weight = np2th(weights[Path(pjoin(n_block, n_unit, "conv_proj/kernel")).as_posix()], conv=True)
+            proj_gn_weight = np2th(weights[Path(pjoin(n_block, n_unit, "gn_proj/scale")).as_posix()])
+            proj_gn_bias = np2th(weights[Path(pjoin(n_block, n_unit, "gn_proj/bias")).as_posix()])
 
             self.downsample.weight.copy_(proj_conv_weight)
             self.gn_proj.weight.copy_(proj_gn_weight.view(-1))

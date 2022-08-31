@@ -1,0 +1,6 @@
+E:\Pycharm_project\TransUNet\datasets\build
+None
+1
+0.001
+20
+trans_build
